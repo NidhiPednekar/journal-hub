@@ -1,0 +1,7 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      database: journalApp
+      auto-index-creation: true
+
