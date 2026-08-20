@@ -10,6 +10,9 @@ target/
 logs/
 *.log
 
+*.yml
+*.yaml
+
 ### STS ###
 .apt_generated
 .classpath
