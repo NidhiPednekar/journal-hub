@@ -13,6 +13,10 @@ logs/
 *.yml
 *.yaml
 
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml
+!.github/workflows/*.yaml
 ### STS ###
 .apt_generated
 .classpath
