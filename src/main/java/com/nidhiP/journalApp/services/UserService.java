@@ -20,6 +20,9 @@ public class UserService {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private EmailService emailService;
+
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public boolean saveNewUser(User user){
@@ -27,6 +30,20 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(Arrays.asList("USER"));
             userRepo.save(user);
+
+            if (user.getEmail() != null && !user.getEmail().isBlank()) {
+                emailService.sendEmail(
+                        user.getEmail(),
+                        "Welcome to Journal-Hub!!",
+                        "Hi " + user.getUserName() + ",\n\n" +
+                                "Welcome aboard! Your account has been created successfully.\n" +
+                                "Start journaling your thoughts today.\n\n" +
+                                "Cheers,\nJournal-Hub Team"
+                );
+            } else {
+                log.warn("No email provided for user {}, skipping welcome mail", user.getUserName());
+            }
+
             return true;
         } catch (Exception e) {
             log.error("Error occurred for {} : ", user.getUserName(), e);
@@ -37,6 +54,14 @@ public class UserService {
 
     public void saveUser(User user){
         userRepo.save(user);
+    }
+
+    public void updateUser(User existingUser, User incoming){
+        existingUser.setUserName(incoming.getUserName());
+        if (incoming.getPassword() != null && !incoming.getPassword().isBlank()) {
+            existingUser.setPassword(passwordEncoder.encode(incoming.getPassword()));
+        }
+        userRepo.save(existingUser);
     }
 
     public void saveAdmin(User user){
